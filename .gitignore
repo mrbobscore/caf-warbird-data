@@ -1,0 +1,7 @@
+tools/raw/
+tools/logs/
+tools/names.txt
+tools/days.txt
+tools/season-data.json
+__pycache__/
+*.new
