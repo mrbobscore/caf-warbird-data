@@ -1,0 +1,25 @@
+name: Update flight history
+on:
+  schedule:
+    - cron: "20 5 * * *"
+    - cron: "20 9 * * *"
+    - cron: "20 14 * * *"
+  workflow_dispatch:
+  push:
+    paths: [".github/workflows/update.yml"]
+permissions:
+  contents: write
+concurrency:
+  group: update
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 240
+    steps:
+      - uses: actions/checkout@v4
+      - name: Fetch yesterday's flights and save them
+        run: |
+          SITE=https://clever-gumdrop-466aec.netlify.app
+          mkdir -p tools
+          curl -fsSL --retry 2 "$SITE/tools/update.sh" -o tools/update.sh.new && bash -n tools/update.sh.new && mv tools/update.sh.new tools/update.sh || rm -f tools/update.sh.new
+          bash tools/update.sh "$SITE"
